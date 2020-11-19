@@ -36,8 +36,6 @@ class CTDetDataset(data.Dataset):
 
     img = cv2.imread(img_path)
 
-    print(index)
-
     height, width = img.shape[0], img.shape[1]
     c = np.array([img.shape[1] / 2., img.shape[0] / 2.], dtype=np.float32)
     if self.opt.keep_res:
