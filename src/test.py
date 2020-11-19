@@ -28,6 +28,8 @@ class PrefetchDataset(torch.utils.data.Dataset):
     self.opt = opt
   
   def __getitem__(self, index):
+    import pdb
+    pdb.set_trace()
     img_id = self.images[index]
     img_info = self.load_image_func(ids=[img_id])[0]
     img_path = os.path.join(self.img_dir, img_info['file_name'])
