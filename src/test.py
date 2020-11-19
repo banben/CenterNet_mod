@@ -98,6 +98,8 @@ def test(opt):
   time_stats = ['tot', 'load', 'pre', 'net', 'dec', 'post', 'merge']
   avg_time_stats = {t: AverageMeter() for t in time_stats}
   for ind in range(num_iters):
+    import pdb
+    pdb.set_trace()
     img_id = dataset.images[ind]
     img_info = dataset.coco.loadImgs(ids=[img_id])[0]
     img_path = os.path.join(dataset.img_dir, img_info['file_name'])
