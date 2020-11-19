@@ -1,0 +1,1 @@
+python test.py ctdet --exp_id coco_hg --arch hourglass --keep_res --flip_test --test_scales 0.5,0.75,1,1.25,1.5 --load_model ../models/ctdet_coco_hg.pth
