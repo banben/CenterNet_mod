@@ -106,8 +106,6 @@ def _topk(scores, K=40):
     # cat 80
     # height 64
     # width 96 
-    import pdb
-    pdb.set_trace()
 
     topk_scores, topk_inds = torch.topk(scores.view(batch, cat, -1), K)
     # topk_scores.shape torch.Size([1, 80, 100])
@@ -491,6 +489,8 @@ def ctdet_decode(heat, wh, reg=None, cat_spec_wh=False, K=100):
     # heat.shape torch.Size([1, 80, 64, 96])
       
     scores, inds, clses, ys, xs = _topk(heat, K=K)
+    import pdb
+    pdb.set_trace()
     if reg is not None:
       reg = _transpose_and_gather_feat(reg, inds)
       reg = reg.view(batch, K, 2)
