@@ -35,32 +35,50 @@ class BaseDetector(object):
     self.pause = True
 
   def pre_process(self, image, scale, meta=None):
-    import pdb
-    pdb.set_trace()
+    # image.shape (427, 640, 3)
     height, width = image.shape[0:2]
+    # height, width (427, 640)
     new_height = int(height * scale)
     new_width  = int(width * scale)
+    # new_height 213
+    # new_width 320
+    # self.opt.fix_res False
     if self.opt.fix_res:
       inp_height, inp_width = self.opt.input_h, self.opt.input_w
       c = np.array([new_width / 2., new_height / 2.], dtype=np.float32)
       s = max(height, width) * 1.0
     else:
+      # self.opt.pad 127
+      # new_height | self.opt.pad 255
       inp_height = (new_height | self.opt.pad) + 1
+      # inp_height 256
+      # new_width | self.opt.pad 383
       inp_width = (new_width | self.opt.pad) + 1
+      # inp_width 384
       c = np.array([new_width // 2, new_height // 2], dtype=np.float32)
+      # c array([160., 106.], dtype=float32)
       s = np.array([inp_width, inp_height], dtype=np.float32)
+      # s array([384., 256.], dtype=float32)
 
     trans_input = get_affine_transform(c, s, 0, [inp_width, inp_height])
     resized_image = cv2.resize(image, (new_width, new_height))
+    import pikle
+    with open('/tmp/resized_image.pkl', 'wb') as f:
+      pickle.dump(resized_image, f)
+    # resized_image.shape (213, 320, 3)
     inp_image = cv2.warpAffine(
       resized_image, trans_input, (inp_width, inp_height),
       flags=cv2.INTER_LINEAR)
+    # inp_image.shape (256, 384, 3)
+    with open('/tmp/inp_image.pkl', 'wb') as f:
+      pickle.dump(inp_image, f)
     inp_image = ((inp_image / 255. - self.mean) / self.std).astype(np.float32)
 
     images = inp_image.transpose(2, 0, 1).reshape(1, 3, inp_height, inp_width)
     if self.opt.flip_test:
       images = np.concatenate((images, images[:, :, :, ::-1]), axis=0)
     images = torch.from_numpy(images)
+    # self.opt.down_ratio 4
     meta = {'c': c, 's': s, 
             'out_height': inp_height // self.opt.down_ratio, 
             'out_width': inp_width // self.opt.down_ratio}
