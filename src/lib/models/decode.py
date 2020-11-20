@@ -489,31 +489,45 @@ def ctdet_decode(heat, wh, reg=None, cat_spec_wh=False, K=100):
     # heat.shape torch.Size([1, 80, 64, 96])
       
     scores, inds, clses, ys, xs = _topk(heat, K=K)
-    import pdb
-    pdb.set_trace()
+    # clses.shape torch.Size([1, 100]) 
+
     if reg is not None:
+      # reg.shape torch.Size([1, 2, 64, 96])
+      # inds.shape torch.Size([1, 100])
       reg = _transpose_and_gather_feat(reg, inds)
+      # reg.shape torch.Size([1, 100, 2])
       reg = reg.view(batch, K, 2)
+      # reg.shape torch.Size([1, 100, 2])
+      # xs.shape torch.Size([1, 100])
+      # ys.shape torch.Size([1, 100])
       xs = xs.view(batch, K, 1) + reg[:, :, 0:1]
+      # xs.shape torch.Size([1, 100, 1])
       ys = ys.view(batch, K, 1) + reg[:, :, 1:2]
+      # ys.shape torch.Size([1, 100, 1])
     else:
       xs = xs.view(batch, K, 1) + 0.5
       ys = ys.view(batch, K, 1) + 0.5
     wh = _transpose_and_gather_feat(wh, inds)
+    # wh.shape torch.Size([1, 100, 2])
+    # cat_spec_wh False
     if cat_spec_wh:
       wh = wh.view(batch, K, cat, 2)
       clses_ind = clses.view(batch, K, 1, 1).expand(batch, K, 1, 2).long()
       wh = wh.gather(2, clses_ind).view(batch, K, 2)
     else:
       wh = wh.view(batch, K, 2)
+      # wh.shape torch.Size([1, 100, 2])
     clses  = clses.view(batch, K, 1).float()
+    # clses.shape torch.Size([1, 100, 1])
     scores = scores.view(batch, K, 1)
+    # scores.shape torch.Size([1, 100, 1])
     bboxes = torch.cat([xs - wh[..., 0:1] / 2, 
                         ys - wh[..., 1:2] / 2,
                         xs + wh[..., 0:1] / 2, 
                         ys + wh[..., 1:2] / 2], dim=2)
+    # bboxes.shape torch.Size([1, 100, 4])
     detections = torch.cat([bboxes, scores, clses], dim=2)
-      
+    
     return detections
 
 def multi_pose_decode(
