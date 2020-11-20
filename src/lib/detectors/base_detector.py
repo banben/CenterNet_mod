@@ -62,7 +62,7 @@ class BaseDetector(object):
 
     trans_input = get_affine_transform(c, s, 0, [inp_width, inp_height])
     resized_image = cv2.resize(image, (new_width, new_height))
-    import pikle
+    import pickle
     with open('/tmp/resized_image.pkl', 'wb') as f:
       pickle.dump(resized_image, f)
     # resized_image.shape (213, 320, 3)
