@@ -110,6 +110,8 @@ def _topk(scores, K=40):
     pdb.set_trace()
 
     topk_scores, topk_inds = torch.topk(scores.view(batch, cat, -1), K)
+    # topk_scores.shape torch.Size([1, 80, 100])
+    # topk_inds.shape torch.Size([1, 80, 100])
 
     topk_inds = topk_inds % (height * width)
     topk_ys   = (topk_inds / width).int().float()
@@ -121,6 +123,12 @@ def _topk(scores, K=40):
         topk_inds.view(batch, -1, 1), topk_ind).view(batch, K)
     topk_ys = _gather_feat(topk_ys.view(batch, -1, 1), topk_ind).view(batch, K)
     topk_xs = _gather_feat(topk_xs.view(batch, -1, 1), topk_ind).view(batch, K)
+
+    # topk_score.shape torch.Size([1, 100])
+    # topk_inds.shape torch.Size([1, 100])
+    # topk_clses.shape torch.Size([1, 100])
+    # topk_ys.shape torch.Size([1, 100])
+    # topk_ks.shape torch.Size([1, 100])
 
     return topk_score, topk_inds, topk_clses, topk_ys, topk_xs
 
