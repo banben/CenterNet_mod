@@ -28,13 +28,19 @@ class PrefetchDataset(torch.utils.data.Dataset):
     self.opt = opt
   
   def __getitem__(self, index):
-    import pdb
-    pdb.set_trace()
+    # index 0
     img_id = self.images[index]
+    # img_id 397133
     img_info = self.load_image_func(ids=[img_id])[0]
+    # img_info 
+    # {'license': 4, 'file_name': '000000397133.jpg', 'coco_url': 'http://images.cocodataset.org/val2017/000000397133.jpg', 'height': 427, 'width': 640, 'date_captured': '2013-11-14 17:02:52', 'flickr_url': 'http://farm7.staticflickr.com/6116/6255196340_da26cf2c9e_z.jpg', 'id': 397133}
     img_path = os.path.join(self.img_dir, img_info['file_name'])
+    # img_path '/mnt/CenterNet_mod/src/lib/../../data/coco/val2017/000000397133.jpg'
     image = cv2.imread(img_path)
+    # image.shape (427, 640, 3)
     images, meta = {}, {}
+    # opt.task 'ctdet'
+    # opt.test_scales [0.5, 0.75, 1.0, 1.25, 1.5]
     for scale in opt.test_scales:
       if opt.task == 'ddd':
         images[scale], meta[scale] = self.pre_process_func(
@@ -55,6 +61,7 @@ def prefetch_test(opt):
   print(opt)
   Logger(opt)
   Detector = detector_factory[opt.task]
+  # Detector CtdetDetector
   
   split = 'val' if not opt.trainval else 'test'
   dataset = Dataset(opt, split)
@@ -140,8 +147,6 @@ def test(opt):
   time_stats = ['tot', 'load', 'pre', 'net', 'dec', 'post', 'merge']
   avg_time_stats = {t: AverageMeter() for t in time_stats}
   for ind in range(num_iters):
-    import pdb
-    pdb.set_trace()
     img_id = dataset.images[ind]
     img_info = dataset.coco.loadImgs(ids=[img_id])[0]
     img_path = os.path.join(dataset.img_dir, img_info['file_name'])

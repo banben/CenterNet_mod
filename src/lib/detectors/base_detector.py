@@ -35,6 +35,8 @@ class BaseDetector(object):
     self.pause = True
 
   def pre_process(self, image, scale, meta=None):
+    import pdb
+    pdb.set_trace()
     height, width = image.shape[0:2]
     new_height = int(height * scale)
     new_width  = int(width * scale)
