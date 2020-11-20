@@ -102,8 +102,12 @@ def _topk_channel(scores, K=40):
 
 def _topk(scores, K=40):
     batch, cat, height, width = scores.size()
+    # batch 1
+    # cat 80
+    # height 64
+    # width 96 
     import pdb
-    pdb.set_trace()  
+    pdb.set_trace()
 
     topk_scores, topk_inds = torch.topk(scores.view(batch, cat, -1), K)
 
