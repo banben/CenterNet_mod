@@ -102,7 +102,9 @@ def _topk_channel(scores, K=40):
 
 def _topk(scores, K=40):
     batch, cat, height, width = scores.size()
-      
+    import pdb
+    pdb.set_trace()  
+
     topk_scores, topk_inds = torch.topk(scores.view(batch, cat, -1), K)
 
     topk_inds = topk_inds % (height * width)
@@ -463,13 +465,18 @@ def ddd_decode(heat, rot, depth, dim, wh=None, reg=None, K=40):
 
 def ctdet_decode(heat, wh, reg=None, cat_spec_wh=False, K=100):
     batch, cat, height, width = heat.size()
-
-    import pdb
-    pdb.set_trace()
+    # batch 1
+    # cat 80
+    # height 64
+    # width 96
+    # heat.shape torch.Size([1, 80, 64, 96])
+    # wh.shape torch.Size([1, 2, 64, 96])
+    # reg.shape torch.Size([1, 2, 64, 96])
 
     # heat = torch.sigmoid(heat)
     # perform nms on heatmaps
     heat = _nms(heat)
+    # heat.shape torch.Size([1, 80, 64, 96])
       
     scores, inds, clses, ys, xs = _topk(heat, K=K)
     if reg is not None:
