@@ -72,6 +72,8 @@ class BaseDetector(object):
     # inp_image.shape (256, 384, 3)
     with open('/tmp/inp_image.pkl', 'wb') as f:
       pickle.dump(inp_image, f)
+    import pdb
+    pdb.set_trace()
     inp_image = ((inp_image / 255. - self.mean) / self.std).astype(np.float32)
 
     images = inp_image.transpose(2, 0, 1).reshape(1, 3, inp_height, inp_width)
