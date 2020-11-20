@@ -101,6 +101,8 @@ class BaseDetector(object):
                         theme=self.opt.debugger_theme)
     start_time = time.time()
     pre_processed = False
+    import pdb
+    pdb.set_trace()
     if isinstance(image_or_path_or_tensor, np.ndarray):
       image = image_or_path_or_tensor
     elif type(image_or_path_or_tensor) == type (''): 
