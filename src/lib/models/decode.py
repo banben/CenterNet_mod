@@ -464,6 +464,9 @@ def ddd_decode(heat, rot, depth, dim, wh=None, reg=None, K=40):
 def ctdet_decode(heat, wh, reg=None, cat_spec_wh=False, K=100):
     batch, cat, height, width = heat.size()
 
+    import pdb
+    pdb.set_trace()
+
     # heat = torch.sigmoid(heat)
     # perform nms on heatmaps
     heat = _nms(heat)

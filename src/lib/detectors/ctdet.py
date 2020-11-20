@@ -27,20 +27,35 @@ class CtdetDetector(BaseDetector):
   
   def process(self, images, return_time=False):
     with torch.no_grad():
-      import pdb
-      pdb.set_trace()
+      # images torch.Size([2, 3, 256, 384])
+      # len(self.model(images)) 2
+      # self.model(images)[0].keys() dict_keys(['hm', 'wh', 'reg'])
+      # self.model(images)[1].keys() dict_keys(['hm', 'wh', 'reg'])
+      # self.model(images)[0]['hm'].shape torch.Size([2, 80, 64, 96])
+      # self.model(images)[0]['wh'].shape torch.Size([2, 2, 64, 96])
+      # self.model(images)[0]['reg'].shape torch.Size([2, 2, 64, 96]) 64 = 256/4, 96 = 384/4
       output = self.model(images)[-1]
       hm = output['hm'].sigmoid_()
       wh = output['wh']
+      # self.opt.reg_offset True
       reg = output['reg'] if self.opt.reg_offset else None
       if self.opt.flip_test:
+        # hm[0:1].shape torch.Size([1, 80, 64, 96])
+        # hm[1:2].shape torch.Size([1, 80, 64, 96])
         hm = (hm[0:1] + flip_tensor(hm[1:2])) / 2
         wh = (wh[0:1] + flip_tensor(wh[1:2])) / 2
         reg = reg[0:1] if reg is not None else None
       torch.cuda.synchronize()
       forward_time = time.time()
+      # self.opt.cat_spec_wh False
+      # self.opt.K 100
+      # hm.shape torch.Size([1, 80, 64, 96])
+      # wh.shape torch.Size([1, 2, 64, 96])
+      # reg.shape torch.Size([1, 2, 64, 96])
       dets = ctdet_decode(hm, wh, reg=reg, cat_spec_wh=self.opt.cat_spec_wh, K=self.opt.K)
-      
+      # dets.shape torch.Size([1, 100, 6])
+
+    # return_time True
     if return_time:
       return output, dets, forward_time
     else:
