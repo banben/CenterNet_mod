@@ -147,6 +147,8 @@ class BaseDetector(object):
       if self.opt.debug >= 2:
         self.debug(debugger, images, dets, output, scale)
       
+      import pdb
+      pdb.set_trace()
       dets = self.post_process(dets, meta, scale)
       torch.cuda.synchronize()
       post_process_time = time.time()
