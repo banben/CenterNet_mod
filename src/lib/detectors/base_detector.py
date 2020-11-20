@@ -101,13 +101,14 @@ class BaseDetector(object):
                         theme=self.opt.debugger_theme)
     start_time = time.time()
     pre_processed = False
-    import pdb
-    pdb.set_trace()
+
     if isinstance(image_or_path_or_tensor, np.ndarray):
       image = image_or_path_or_tensor
     elif type(image_or_path_or_tensor) == type (''): 
       image = cv2.imread(image_or_path_or_tensor)
     else:
+      # image_or_path_or_tensor['image'].shape torch.Size([1, 427, 640, 3])
+      # image_or_path_or_tensor['image'][0].numpy() (427, 640, 3)
       image = image_or_path_or_tensor['image'][0].numpy()
       pre_processed_images = image_or_path_or_tensor
       pre_processed = True
@@ -116,15 +117,21 @@ class BaseDetector(object):
     load_time += (loaded_time - start_time)
     
     detections = []
+    # self.scales [0.5, 0.75, 1.0, 1.25, 1.5]
     for scale in self.scales:
       scale_start_time = time.time()
       if not pre_processed:
         images, meta = self.pre_process(image, scale, meta)
       else:
         # import pdb; pdb.set_trace()
+        # pre_processed_images['images'][scale].shape torch.Size([1, 2, 3, 256, 384])
         images = pre_processed_images['images'][scale][0]
+        # images torch.Size([2, 3, 256, 384])
         meta = pre_processed_images['meta'][scale]
+        # meta {'c': tensor([[160., 106.]]), 's': tensor([[384., 256.]]), 'out_height': tensor([64]), 'out_width': tensor([96])}
         meta = {k: v.numpy()[0] for k, v in meta.items()}
+        # meta {'c': array([160., 106.], dtype=float32), 's': array([384., 256.], dtype=float32), 'out_height': 64, 'out_width': 96}
+      # self.opt.device device(type='cuda')
       images = images.to(self.opt.device)
       torch.cuda.synchronize()
       pre_process_time = time.time()
