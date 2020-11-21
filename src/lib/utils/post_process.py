@@ -83,6 +83,8 @@ def ddd_post_process(dets, c, s, calibs, opt):
 def ctdet_post_process(dets, c, s, h, w, num_classes):
   # dets: batch x max_dets x dim
   # return 1-based class det dict
+  import pdb
+  pdb.set_trace()
   ret = []
   for i in range(dets.shape[0]):
     top_preds = {}

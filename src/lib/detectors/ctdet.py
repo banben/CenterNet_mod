@@ -62,13 +62,20 @@ class CtdetDetector(BaseDetector):
       return output, dets
 
   def post_process(self, dets, meta, scale=1):
-    import pdb
-    pdb.set_trace()
+    # dets.shape torch.Size([1, 100, 6])
+    # meta.keys() dict_keys(['c', 's', 'out_height', 'out_width'])
+    # meta
+    # {'c': array([160., 106.], dtype=float32), 's': array([384., 256.], dtype=float32), 'out_height': 64, 'out_width': 96}
     dets = dets.detach().cpu().numpy()
     dets = dets.reshape(1, -1, dets.shape[2])
+    # dets.shape (1, 100, 6)
+    # self.num_classes 80
     dets = ctdet_post_process(
         dets.copy(), [meta['c']], [meta['s']],
         meta['out_height'], meta['out_width'], self.opt.num_classes)
+    # len(dets) 1
+    # dets[0].keys()
+    # dict_keys([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80]) 
     for j in range(1, self.num_classes + 1):
       dets[0][j] = np.array(dets[0][j], dtype=np.float32).reshape(-1, 5)
       dets[0][j][:, :4] /= scale
