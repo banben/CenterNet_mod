@@ -84,14 +84,19 @@ class CtdetDetector(BaseDetector):
   def merge_outputs(self, detections):
     results = {}
     for j in range(1, self.num_classes + 1):
-      import pdb
-      pdb.set_trace()
+      # self.opt.nms False
+      # self.scales [0.5, 0.75, 1.0, 1.25, 1.5]
+      # len(detections) 5
       results[j] = np.concatenate(
         [detection[j] for detection in detections], axis=0).astype(np.float32)
+      # results[1].shape (22, 5)
       if len(self.scales) > 1 or self.opt.nms:
          soft_nms(results[j], Nt=0.5, method=2)
+    import pdb
+    pdb.set_trace()
     scores = np.hstack(
       [results[j][:, 4] for j in range(1, self.num_classes + 1)])
+    # self.max_per_image 100
     if len(scores) > self.max_per_image:
       kth = len(scores) - self.max_per_image
       thresh = np.partition(scores, kth)[kth]
