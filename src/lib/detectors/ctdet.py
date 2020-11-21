@@ -92,11 +92,13 @@ class CtdetDetector(BaseDetector):
       # results[1].shape (22, 5)
       if len(self.scales) > 1 or self.opt.nms:
          soft_nms(results[j], Nt=0.5, method=2)
-    import pdb
-    pdb.set_trace()
+    # results[1].shape (22, 5)
+    
     scores = np.hstack(
       [results[j][:, 4] for j in range(1, self.num_classes + 1)])
+    # scores.shape (500,)
     # self.max_per_image 100
+    # len(scores) 500
     if len(scores) > self.max_per_image:
       kth = len(scores) - self.max_per_image
       thresh = np.partition(scores, kth)[kth]
