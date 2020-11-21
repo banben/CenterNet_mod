@@ -83,11 +83,13 @@ def ddd_post_process(dets, c, s, calibs, opt):
 def ctdet_post_process(dets, c, s, h, w, num_classes):
   # dets: batch x max_dets x dim
   # return 1-based class det dict
-  import pdb
-  pdb.set_trace()
   ret = []
   for i in range(dets.shape[0]):
     top_preds = {}
+    # dets[i, :, 0:2].shape (100, 2)
+    # c[i].shape (2,)
+    # s[i].shape (2,)
+    # (w, h) (192, 128)
     dets[i, :, :2] = transform_preds(
           dets[i, :, 0:2], c[i], s[i], (w, h))
     dets[i, :, 2:4] = transform_preds(
@@ -95,6 +97,19 @@ def ctdet_post_process(dets, c, s, h, w, num_classes):
     classes = dets[i, :, -1]
     for j in range(num_classes):
       inds = (classes == j)
+      # inds
+      # array([ True, False, False,  True, False, False, False, False, False,
+      #  False, False, False, False, False, False, False, False, False,
+      #  False, False, False, False, False, False, False, False, False,
+      #  False, False, False, False, False, False, False, False, False,
+      #  False, False, False, False, False, False, False, False, False,
+      #  False, False, False, False, False, False, False, False, False,
+      #  False, False, False, False, False, False, False, False, False,
+      #  False, False, False, False, False, False, False, False, False,
+      #  False, False, False, False, False, False, False, False, False,
+      #  False, False, False, False, False, False, False,  True, False,
+      #  False, False, False, False, False, False, False, False, False,
+      #  False])
       top_preds[j + 1] = np.concatenate([
         dets[i, inds, :4].astype(np.float32),
         dets[i, inds, 4:5].astype(np.float32)], axis=1).tolist()

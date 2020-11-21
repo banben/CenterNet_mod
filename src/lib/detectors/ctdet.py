@@ -84,6 +84,8 @@ class CtdetDetector(BaseDetector):
   def merge_outputs(self, detections):
     results = {}
     for j in range(1, self.num_classes + 1):
+      import pdb
+      pdb.set_trace()
       results[j] = np.concatenate(
         [detection[j] for detection in detections], axis=0).astype(np.float32)
       if len(self.scales) > 1 or self.opt.nms:
