@@ -62,6 +62,8 @@ class CtdetDetector(BaseDetector):
       return output, dets
 
   def post_process(self, dets, meta, scale=1):
+    import pdb
+    pdb.set_trace()
     dets = dets.detach().cpu().numpy()
     dets = dets.reshape(1, -1, dets.shape[2])
     dets = ctdet_post_process(
