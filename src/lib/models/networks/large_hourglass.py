@@ -170,14 +170,19 @@ class kp_module(nn.Module):
         self.merge = make_merge_layer(curr_dim)
 
     def forward(self, x):
-        import pdb
-        pdb.set_trace()
+        # x.shape torch.Size([4, 256, 128, 128])
         up1  = self.up1(x)
+        # up1.shape torch.Size([4, 256, 128, 128])
         max1 = self.max1(x)
+        # max1.shape torch.Size([4, 256, 128, 128])
         low1 = self.low1(max1)
+        # low1.shape torch.Size([4, 256, 64, 64])
         low2 = self.low2(low1)
         low3 = self.low3(low2)
         up2  = self.up2(low3)
+        if x.shape[2] == 128:
+            import pdb
+            pdb.set_trace()
         return self.merge(up1, up2)
 
 class exkp(nn.Module):
