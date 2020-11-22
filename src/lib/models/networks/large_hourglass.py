@@ -124,6 +124,8 @@ class kp_module(nn.Module):
     ):
         super(kp_module, self).__init__()
 
+        import pdb
+        pdb.set_trace()
         self.n   = n
 
         curr_mod = modules[0]
@@ -252,9 +254,10 @@ class exkp(nn.Module):
 
     def forward(self, image):
         # print('image shape', image.shape)
-        import pdb
-        pdb.set_trace()
+
+        # image.shape torch.Size([4, 3, 512, 512])
         inter = self.pre(image)
+        # inter.shape torch.Size([4, 256, 128, 128])
         outs  = []
 
         for ind in range(self.nstack):
