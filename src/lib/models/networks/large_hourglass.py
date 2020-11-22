@@ -124,15 +124,18 @@ class kp_module(nn.Module):
     ):
         super(kp_module, self).__init__()
 
-        import pdb
-        pdb.set_trace()
         self.n   = n
+        # self.n 5
 
         curr_mod = modules[0]
+        # curr_mod 2
         next_mod = modules[1]
+        # next_mod 2
 
         curr_dim = dims[0]
+        # curr_dim 256
         next_dim = dims[1]
+        # next_dim 256
 
         self.up1  = make_up_layer(
             3, curr_dim, curr_dim, curr_mod, 
@@ -167,6 +170,8 @@ class kp_module(nn.Module):
         self.merge = make_merge_layer(curr_dim)
 
     def forward(self, x):
+        import pdb
+        pdb.set_trace()
         up1  = self.up1(x)
         max1 = self.max1(x)
         low1 = self.low1(max1)
