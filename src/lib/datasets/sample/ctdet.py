@@ -101,19 +101,20 @@ class CTDetDataset(data.Dataset):
     inp = cv2.warpAffine(img, trans_input, 
                          (input_w, input_h),
                          flags=cv2.INTER_LINEAR)
-    # inp 512 512
-    import pdb
-    pdb.set_trace()
+    # inp.shape (512, 512, 3)
 
     inp = (inp.astype(np.float32) / 255.)
+    # self.opt.no_color_aug False
     if self.split == 'train' and not self.opt.no_color_aug:
       color_aug(self._data_rng, inp, self._eig_val, self._eig_vec)
     inp = (inp - self.mean) / self.std
     inp = inp.transpose(2, 0, 1)
 
+    # self.opt.down_ratio 4
     output_h = input_h // self.opt.down_ratio
     output_w = input_w // self.opt.down_ratio
     num_classes = self.num_classes
+    # self.num_classes 80
     trans_output = get_affine_transform(c, s, 0, [output_w, output_h])
 
     hm = np.zeros((num_classes, output_h, output_w), dtype=np.float32)
