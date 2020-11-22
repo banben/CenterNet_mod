@@ -27,19 +27,33 @@ class CTDetDataset(data.Dataset):
     return border // i
 
   def __getitem__(self, index):
-    import pdb
-    pdb.set_trace()
+    # index 58667
     img_id = self.images[index]
+    # img_id 487392
     file_name = self.coco.loadImgs(ids=[img_id])[0]['file_name']
+    # file_name '000000487392.jpg'
     img_path = os.path.join(self.img_dir, file_name)
+    # img_path '/mnt/CenterNet_mod/src/lib/../../data/coco/train2017/000000487392.jpg'
     ann_ids = self.coco.getAnnIds(imgIds=[img_id])
+    # ann_ids [311300, 674376, 1068022]
     anns = self.coco.loadAnns(ids=ann_ids)
+    # len(anns) 3
     num_objs = min(len(anns), self.max_objs)
+    # num_objs 3
 
     img = cv2.imread(img_path)
+    # img.shape (480, 640, 3)
+
+    with open('/tmp/img.pkl', 'wb') as f:
+      import pickle
+      pickle.dump(img, f)
 
     height, width = img.shape[0], img.shape[1]
+    # height 480
+    # width 640
     c = np.array([img.shape[1] / 2., img.shape[0] / 2.], dtype=np.float32)
+    # c array([320., 240.], dtype=float32)
+    # self.opt.keep_res False
     if self.opt.keep_res:
       input_h = (height | self.opt.pad) + 1
       input_w = (width | self.opt.pad) + 1
@@ -47,15 +61,29 @@ class CTDetDataset(data.Dataset):
     else:
       s = max(img.shape[0], img.shape[1]) * 1.0
       input_h, input_w = self.opt.input_h, self.opt.input_w
+      # input_h 512
+      # input_w 512
     
     flipped = False
+    # self.split 'train'
     if self.split == 'train':
+      # self.opt.not_rand_crop False
       if not self.opt.not_rand_crop:
         s = s * np.random.choice(np.arange(0.6, 1.4, 0.1))
+        # np.random.choice(np.arange(0.6, 1.4, 0.1)) 1.0999999999999999
+        # s 639.9999999999999
+        # img.shape[1] 640
+        # img.shape[0] 480
         w_border = self._get_border(128, img.shape[1])
+        # w_border 128
         h_border = self._get_border(128, img.shape[0])
+        # h_border 128
+        # img.shape[1] - w_border 512
         c[0] = np.random.randint(low=w_border, high=img.shape[1] - w_border)
+        # c[0] 290.0
+        # img.shape[0] - h_border 352
         c[1] = np.random.randint(low=h_border, high=img.shape[0] - h_border)
+        # c[1] 194.0
       else:
         sf = self.opt.scale
         cf = self.opt.shift
@@ -71,9 +99,19 @@ class CTDetDataset(data.Dataset):
 
     trans_input = get_affine_transform(
       c, s, 0, [input_w, input_h])
+    with open('/tmp/trans_input.pkl', 'wb') as f:
+      import pickle
+      pickle.dump(trans_input, f)
     inp = cv2.warpAffine(img, trans_input, 
                          (input_w, input_h),
                          flags=cv2.INTER_LINEAR)
+    with open('/tmp/inp.pkl', 'wb') as f:
+      import pickle
+      pickle.dump(inp, f)
+
+    import pdb
+    pdb.set_trace()
+
     inp = (inp.astype(np.float32) / 255.)
     if self.split == 'train' and not self.opt.no_color_aug:
       color_aug(self._data_rng, inp, self._eig_val, self._eig_vec)
