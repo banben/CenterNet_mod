@@ -468,6 +468,8 @@ class DLASeg(nn.Module):
             self.__setattr__(head, fc)
 
     def forward(self, x):
+        import pdb
+        pdb.set_trace()
         x = self.base(x)
         x = self.dla_up(x)
 
