@@ -29,6 +29,8 @@ class CtdetLoss(torch.nn.Module):
     opt = self.opt
     hm_loss, wh_loss, off_loss = 0, 0, 0
     for s in range(opt.num_stacks):
+      import pdb
+      pdb.set_trace()
       output = outputs[s]
       if not opt.mse_loss:
         output['hm'] = _sigmoid(output['hm'])
