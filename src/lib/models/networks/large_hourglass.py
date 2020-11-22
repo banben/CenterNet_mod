@@ -178,11 +178,11 @@ class kp_module(nn.Module):
         low1 = self.low1(max1)
         # low1.shape torch.Size([4, 256, 64, 64])
         low2 = self.low2(low1)
+        # low2.shape torch.Size([4, 256, 64, 64])
         low3 = self.low3(low2)
+        # low3.shape torch.Size([4, 256, 64, 64])
         up2  = self.up2(low3)
-        if x.shape[2] == 128:
-            import pdb
-            pdb.set_trace()
+        # up2.shape torch.Size([4, 256, 128, 128])
         return self.merge(up1, up2)
 
 class exkp(nn.Module):
