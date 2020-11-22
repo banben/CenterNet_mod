@@ -44,10 +44,6 @@ class CTDetDataset(data.Dataset):
     img = cv2.imread(img_path)
     # img.shape (480, 640, 3)
 
-    with open('/tmp/img.pkl', 'wb') as f:
-      import pickle
-      pickle.dump(img, f)
-
     height, width = img.shape[0], img.shape[1]
     # height 480
     # width 640
@@ -99,16 +95,13 @@ class CTDetDataset(data.Dataset):
 
     trans_input = get_affine_transform(
       c, s, 0, [input_w, input_h])
-    with open('/tmp/trans_input.pkl', 'wb') as f:
-      import pickle
-      pickle.dump(trans_input, f)
+    # trans_input
+    # array([[ 8.88888889e-01, -0.00000000e+00,  4.62222222e+01],
+    #    [ 6.02154861e-17,  8.88888889e-01,  7.55555556e+01]])
     inp = cv2.warpAffine(img, trans_input, 
                          (input_w, input_h),
                          flags=cv2.INTER_LINEAR)
-    with open('/tmp/inp.pkl', 'wb') as f:
-      import pickle
-      pickle.dump(inp, f)
-
+    # inp 512 512
     import pdb
     pdb.set_trace()
 
