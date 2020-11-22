@@ -273,9 +273,9 @@ class exkp(nn.Module):
         for ind in range(self.nstack):
             kp_, cnv_  = self.kps[ind], self.cnvs[ind]
             kp  = kp_(inter)
-            import pdb
-            pdb.set_trace()
+            # kp.shape torch.Size([4, 256, 128, 128])
             cnv = cnv_(kp)
+            # cnv.shape torch.Size([4, 256, 128, 128])
 
             out = {}
             for head in self.heads:
@@ -285,6 +285,8 @@ class exkp(nn.Module):
             
             outs.append(out)
             if ind < self.nstack - 1:
+                import pdb
+                pdb.set_trace()
                 inter = self.inters_[ind](inter) + self.cnvs_[ind](cnv)
                 inter = self.relu(inter)
                 inter = self.inters[ind](inter)
