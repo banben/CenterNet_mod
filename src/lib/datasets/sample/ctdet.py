@@ -27,6 +27,8 @@ class CTDetDataset(data.Dataset):
     return border // i
 
   def __getitem__(self, index):
+    import pdb
+    pdb.set_trace()
     img_id = self.images[index]
     file_name = self.coco.loadImgs(ids=[img_id])[0]['file_name']
     img_path = os.path.join(self.img_dir, file_name)

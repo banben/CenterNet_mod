@@ -18,21 +18,28 @@ from trains.train_factory import train_factory
 
 def main(opt):
   torch.manual_seed(opt.seed)
+  # opt.not_cuda_benchmark False
+  # opt.test False
   torch.backends.cudnn.benchmark = not opt.not_cuda_benchmark and not opt.test
+  # opt.dataset 'coco'
+  # opt.task 'ctdet'
   Dataset = get_dataset(opt.dataset, opt.task)
   opt = opts().update_dataset_info_and_set_heads(opt, Dataset)
   print(opt)
 
-  import pdb
-  pdb.set_trace()
-
   logger = Logger(opt)
 
+  # opt.gpus_str '0'
   os.environ['CUDA_VISIBLE_DEVICES'] = opt.gpus_str
+  # opt.gpus [0]
   opt.device = torch.device('cuda' if opt.gpus[0] >= 0 else 'cpu')
   
   print('Creating model...')
+  # opt.arch hourglass
+  # opt.heads {'hm': 80, 'wh': 2, 'reg': 2}
+  # opt.head_conv 64
   model = create_model(opt.arch, opt.heads, opt.head_conv)
+  # opt.lr 0.00025
   optimizer = torch.optim.Adam(model.parameters(), opt.lr)
   start_epoch = 0
   if opt.load_model != '':
