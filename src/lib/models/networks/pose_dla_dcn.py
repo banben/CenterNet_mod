@@ -468,8 +468,7 @@ class DLASeg(nn.Module):
             self.__setattr__(head, fc)
 
     def forward(self, x):
-        import pdb
-        pdb.set_trace()
+        # x.shape torch.Size([4, 3, 512, 512])
         x = self.base(x)
         x = self.dla_up(x)
 
