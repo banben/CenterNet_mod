@@ -273,6 +273,8 @@ class exkp(nn.Module):
         for ind in range(self.nstack):
             kp_, cnv_  = self.kps[ind], self.cnvs[ind]
             kp  = kp_(inter)
+            import pdb
+            pdb.set_trace()
             cnv = cnv_(kp)
 
             out = {}
