@@ -285,11 +285,13 @@ class exkp(nn.Module):
             
             outs.append(out)
             if ind < self.nstack - 1:
-                import pdb
-                pdb.set_trace()
+                # inter.shape torch.Size([4, 256, 128, 128])
+                # cnv.shape torch.Size([4, 256, 128, 128])
                 inter = self.inters_[ind](inter) + self.cnvs_[ind](cnv)
+                # inter.shape torch.Size([4, 256, 128, 128])
                 inter = self.relu(inter)
                 inter = self.inters[ind](inter)
+                # inter.shape torch.Size([4, 256, 128, 128])
         return outs
 
 
