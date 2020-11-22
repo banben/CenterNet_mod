@@ -252,6 +252,8 @@ class exkp(nn.Module):
 
     def forward(self, image):
         # print('image shape', image.shape)
+        import pdb
+        pdb.set_trace()
         inter = self.pre(image)
         outs  = []
 
