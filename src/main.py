@@ -55,7 +55,7 @@ def main(opt):
       Dataset(opt, 'val'), 
       batch_size=1, 
       shuffle=False,
-      num_workers=1,
+      num_workers=0,
       pin_memory=True
   )
 
@@ -68,7 +68,7 @@ def main(opt):
       Dataset(opt, 'train'), 
       batch_size=opt.batch_size, 
       shuffle=True,
-      num_workers=opt.num_workers,
+      num_workers=0,
       pin_memory=True,
       drop_last=True
   )
